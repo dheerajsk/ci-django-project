@@ -1,0 +1,18 @@
+Step 1: Create Project and Application - Done.
+Step 2: Create Model - Done.
+Step 3: Create Serializer. - Done.
+Step 4: Create Books
+Step 5: Craete a View
+Step 6: Setup Urls.
+
+
+
+
+
+Get All Books
+    
+Get Book by ID
+Add Review for a book
+Comment a Review.
+User login
+User registration
