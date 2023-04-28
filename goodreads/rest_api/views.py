@@ -67,3 +67,11 @@ class BookReviewUpdate(View):
                 return JsonResponse(review_serialized.data, status=200)
             
         return HttpResponseBadRequest()
+
+class BookReviewDelete(View):
+    def delete(self, request, review_id):
+        for index, item in enumerate(book_reviews):
+            if(item["review_id"]==review_id):
+                book_reviews.remove(item)
+                return JsonResponse("Review is deleted",safe=False,status=200)
+        return HttpResponseBadRequest()
