@@ -45,3 +45,25 @@ class BookReview(View):
         else:
             return HttpResponseBadRequest()
 
+class BookReviewUpdate(View):
+    def put(self, request, review_id):
+
+        #Parse data from req.body.
+        review_data=json.loads(request.body)
+
+        #Validate data
+        review_serialized=BookReviewSerializer(data=review_data)
+        if(review_serialized.is_valid()):
+            # Find the review to update
+            review_to_update=None
+            for index, item in enumerate(book_reviews):
+                if(item["review_id"]==review_id):
+                    review_to_update=item
+                    break
+            
+            # if data found, update it.
+            if(review_to_update):
+                book_reviews[index]=review_serialized.data
+                return JsonResponse(review_serialized.data, status=200)
+            
+        return HttpResponseBadRequest()
