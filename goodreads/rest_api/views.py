@@ -1,10 +1,13 @@
 from django.shortcuts import render
 from django.views import View
-from django.http import JsonResponse, Http404
+from django.http import JsonResponse, Http404, HttpResponseBadRequest
 from .data import books
-from .serializers import BookSerializer
+from .serializers import BookSerializer, BookReviewSerializer
+import json
 
 # Create your views here.
+
+book_reviews=[]
 
 class BookList(View):
     def get(self, request):
@@ -22,3 +25,23 @@ class BookDetail(View):
             return JsonResponse(BookSerializer(bookFound).data, safe=False)
         else:
             raise Http404("Book not found")
+        
+
+#localhost:8000/api/book/1/reviews
+class BookReview(View):
+    def post(self, request, book_id):
+        # Parse data from req.body (json)
+        
+        review_data=json.loads(request.body)
+        review_data["book_id"]=book_id
+        review_data["review_id"]=len(book_reviews)+1
+        
+        #Validate data using serializer
+        review_serialized=BookReviewSerializer(data=review_data)
+        if(review_serialized.is_valid()):
+            book_reviews.append(review_serialized.data)
+
+            return JsonResponse(review_serialized.data, status=201)
+        else:
+            return HttpResponseBadRequest()
+
