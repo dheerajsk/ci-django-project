@@ -2,12 +2,13 @@ from django.shortcuts import render
 from django.views import View
 from django.http import JsonResponse, Http404, HttpResponseBadRequest
 from .data import books
-from .serializers import BookSerializer, BookReviewSerializer
+from .serializers import BookSerializer, BookReviewSerializer, UserSerializer
 import json
 
 # Create your views here.
 
 book_reviews=[]
+users=[]
 
 class BookList(View):
     def get(self, request):
@@ -74,4 +75,28 @@ class BookReviewDelete(View):
             if(item["review_id"]==review_id):
                 book_reviews.remove(item)
                 return JsonResponse("Review is deleted",safe=False,status=200)
+        return HttpResponseBadRequest()
+
+class UserSignUp(View):
+    def post(self, request):
+        user_data=json.loads(request.body)
+        user_data["user_id"]=len(users)+1
+        
+        #Validate data using serializer
+        user_serialized=UserSerializer(data=user_data)
+        if(user_serialized.is_valid()):
+            users.append(user_serialized.data)
+
+            return JsonResponse(user_serialized.data, status=201)
+        else:
+            return HttpResponseBadRequest()
+
+class UserSignIn(View):
+    def post(self, request):
+        user_data=json.loads(request.body)
+        print(user_data)
+        print(user_data["email"])
+        for index, item in enumerate(users):
+                if(item["email"]==user_data["email"] and item["password"]==user_data["password"]):
+                    return JsonResponse("Login is Successful", safe=False,status=200)
         return HttpResponseBadRequest()

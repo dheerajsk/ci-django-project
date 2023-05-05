@@ -14,3 +14,9 @@ class BookReview(models.Model):
     user_id=models.IntegerField()
     comment=models.CharField(max_length=1000)
     rating=models.DecimalField(max_digits=4, decimal_places=2)
+
+class User(models.Model):
+    user_id=models.IntegerField()
+    name=models.CharField(max_length=100)
+    email=models.CharField(max_length=60)
+    password=models.CharField(max_length=16)
